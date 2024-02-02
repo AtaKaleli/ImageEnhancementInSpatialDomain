@@ -1,0 +1,58 @@
+clear all;clc;
+img=imread("Image2.png");
+
+
+img=im2double(img);
+
+
+Hx=[-1 -2 -1;0 0 0;1 2 1];
+Hy=[-1 0 1;-2 0 2;-1 0 1];
+
+
+
+rowImg=size(img,1);
+columnImg=size(img,2);
+
+rowMaskX=size(Hx,1);
+columnMaskX=size(Hx,2);
+
+rowMaskY=size(Hy,1);
+columnMaskY=size(Hy,2);
+
+paddedImg=padarray(img,[1 1],0,"both");
+
+derivativeOfX=zeros([rowImg columnImg]);
+derivativeOfY=zeros([rowImg columnImg]);
+
+for i=1:rowImg
+    for j=1:columnImg
+        sum=0;
+        for k=1:rowMaskX
+            for l=1:columnMaskX
+               sum=sum+(Hx(k,l)*paddedImg(i+k-1,j+l-1));
+            end
+        end
+        derivativeOfX(i,j)=sum;
+    end
+end
+
+for i=1:rowImg
+    for j=1:columnImg
+        sum=0;
+        for k=1:rowMaskY
+            for l=1:columnMaskY
+               sum=sum+(Hy(k,l)*paddedImg(i+k-1,j+l-1));
+            end
+        end
+        derivativeOfY(i,j)=sum;
+    end
+end
+
+derivativeOfX=abs(derivativeOfX);
+
+derivativeOfY=abs(derivativeOfY);
+
+
+edgeOfImg=abs(derivativeOfX+derivativeOfY);
+figure;
+imshow(edgeOfImg);
